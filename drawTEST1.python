@@ -1,24 +1,44 @@
-    
-
 import pygame, sys
 from math import pi
 
 # Initialize pygame
 pygame.init()
-
-# Set the height and width of the screen
-size = [400, 300]
-screen = pygame.display.set_mode(size)
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-
-clock = pygame.time.Clock()
-FPS = 30
-
-screen.fill("white")
+screen_width = 400
+screen_height = 400
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pong Game")
 
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+WALL_COLOR = (60, 179, 113)  # Define the color for the wall
 
+fps = pygame.time.Clock()
+
+#Global variables
+posPALLET = [0, 0]
+posBALL = [0, 0]
+ballRADIUS = 4
+velocity = [0, 0]
+recordScore = 0
+lastScore = 0
+
+#Pong walls drawing
+def drawWALLS():
+    pygame.draw.line(screen, WALL_COLOR, [0, 0], [50, 30], 5)
+
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+
+    screen.fill(WHITE)
+    drawWALLS()  
+
+    pygame.display.flip()
+
+    fps.tick(60)
 
 pygame.quit()
+sys.exit()
