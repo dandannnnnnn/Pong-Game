@@ -22,9 +22,7 @@ velocity = [0, 0]
 recordScore = 0
 lastScore = 0
 
-#Pong walls drawing
-def drawWALLS():
-    pygame.draw.line(screen, WALL_COLOR, [0, 0], [50, 30], 5)
+#Pong walls are the window screen borders
 
 running = True
 while running:
@@ -34,7 +32,6 @@ while running:
 
 
     screen.fill(WHITE)
-    drawWALLS()  
 
     pygame.display.flip()
 
