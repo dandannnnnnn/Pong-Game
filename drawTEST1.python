@@ -79,7 +79,7 @@ while running:
     positionBall_y += speedBall_y
 
     if positionBall_x - ballRADIUS <= borderThickness: #left border collision
-        speedBaal_x *= -1
+        speedBall_x *= -1
         positionBall_x = borderThickness + ballRADIUS
     
     if positionBall_y - ballRADIUS <= borderThickness: #top border collision
