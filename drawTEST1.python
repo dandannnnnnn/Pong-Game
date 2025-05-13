@@ -1,5 +1,4 @@
 import pygame, sys
-from math import pi
 
 # Initialize pygame
 pygame.init()
@@ -16,44 +15,52 @@ pastel_purple = (221, 160, 221) #color borders windows
 fps = pygame.time.Clock()
 
 #Global variables
-posPALLET = [0, 0]
-posBALL = [0, 0]
 ballRADIUS = 8
 velocity = 10
 recordScore = 0
 lastScore = 0
 
-rect_x = 0
-rect_y = 0
+#Border variables
+rectBorder_x = 0 #position rectangle x
+rectBorder_y_top = 0 #position rectangle y
 rect_width = screen_width
-rect_height = 8
+borderThickness = 8
 
-x = 400
-y = 400
+#Pallet variables
+pallet_width = 4
+pallet_height = 40
+pallet_x = 380
+pallet_y = (screen_height / 2) - (pallet_height / 2)
+pallet_speed = 7
 
-pygame.draw.rect(screen, (0, 0, 255), [50, 200, 500, 200])
+#=========================================================================================================================================
+#=========================================================================================================================================
+
 running = True
 while running:
+    screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
     
+    #Pallet movement
     keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        pallet_y -= pallet_speed
+    if keys[pygame.K_DOWN]:
+        pallet_y += pallet_speed
+    
+    #Pallet boundary: pallet cannot overlay with borders
+    if pallet_y < borderThickness:
+        pallet_y = borderThickness
+    if pallet_y + pallet_height > screen_height - borderThickness:
+        pallet_y = screen_height - borderThickness - pallet_height
 
-    if keys[pygame.K_LEFT] and y > 0:
-        x -= velocity
+    pygame.draw.rect(screen, pastel_purple, [rectBorder_x, rectBorder_y_top, rect_width, borderThickness]) #draw the top border
+    pygame.draw.rect(screen, pastel_purple, [0, screen_height - borderThickness, screen_width, borderThickness]) #draw the bottom border
+    pygame.draw.rect(screen, pastel_purple, [0, 0, borderThickness, screen_height]) #draw the left border
 
-    if keys[pygame.K_RIGHT] and y < 400 - screen_width:
-        x += velocity
-
-    screen.fill(BLACK)
-    fps.tick(60)
-
-    pygame.draw.rect(screen, pastel_purple, [rect_x, rect_y, rect_width, rect_height]) #draw the top border
-    pygame.draw.rect(screen, pastel_purple, [0, screen_height - rect_height, screen_width, rect_height]) #draw the bottom border
-    pygame.draw.rect(screen, pastel_purple, [0, 0, rect_height, screen_height]) #draw the left border
-
-    pygame.draw.rect(screen, WHITE, [380, 170, 4, 40]) #pong pallet drawing
+    pygame.draw.rect(screen, WHITE, [pallet_x, pallet_y, pallet_width, pallet_height]) #pong pallet drawing
 
     pygame.draw.circle(screen, BALL_COLOR, (150, 150), ballRADIUS) #pong ball drawing
 
@@ -61,6 +68,8 @@ while running:
 
     # Update the display
     pygame.display.flip()
+    fps.tick(60)
+
 
 pygame.quit()
 sys.exit()
