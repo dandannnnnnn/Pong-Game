@@ -1,0 +1,24 @@
+    
+
+import pygame, sys
+from math import pi
+
+# Initialize pygame
+pygame.init()
+
+# Set the height and width of the screen
+size = [400, 300]
+screen = pygame.display.set_mode(size)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+
+clock = pygame.time.Clock()
+FPS = 30
+
+screen.fill("white")
+pygame.display.set_caption("Pong Game")
+
+
+
+pygame.quit()
