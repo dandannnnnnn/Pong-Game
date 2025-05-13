@@ -10,7 +10,7 @@ pygame.display.set_caption("Pong Game")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-PALLET_COLOR= (60, 179, 113)
+BALL_COLOR= (60, 179, 113)
 pastel_purple = (221, 160, 221) #color borders windows
 
 fps = pygame.time.Clock()
@@ -18,8 +18,8 @@ fps = pygame.time.Clock()
 #Global variables
 posPALLET = [0, 0]
 posBALL = [0, 0]
-ballRADIUS = 4
-velocity = [0, 0]
+ballRADIUS = 8
+velocity = 10
 recordScore = 0
 lastScore = 0
 
@@ -28,8 +28,8 @@ rect_y = 0
 rect_width = screen_width
 rect_height = 8
 
-#Pong walls are the window screen borders
-
+x = 400
+y = 400
 
 pygame.draw.rect(screen, (0, 0, 255),
                  [50, 200, 500, 200])
@@ -38,7 +38,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    
+    keys = pygame.key.get_pressed()
 
+    if keys[pygame.K_LEFT] and y > 0:
+        x -= velocity
+
+    if keys[pygame.K_RIGHT] and y < 400 - screen_width:
+        x += velocity
 
     screen.fill(BLACK)
     fps.tick(60)
@@ -46,6 +53,12 @@ while running:
     pygame.draw.rect(screen, pastel_purple, [rect_x, rect_y, rect_width, rect_height]) #draw the top border
     pygame.draw.rect(screen, pastel_purple, [0, screen_height - rect_height, screen_width, rect_height]) #draw the bottom border
     pygame.draw.rect(screen, pastel_purple, [0, 0, rect_height, screen_height]) #draw the left border
+
+    pygame.draw.rect(screen, WHITE, [380, 170, 4, 40]) #pong pallet drawing
+
+    pygame.draw.circle(screen, BALL_COLOR, (150, 150), ballRADIUS) #pong ball drawing
+
+
 
     # Update the display
     pygame.display.flip()
