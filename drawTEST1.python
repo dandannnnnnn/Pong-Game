@@ -10,7 +10,8 @@ pygame.display.set_caption("Pong Game")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-WALL_COLOR = (60, 179, 113)  # Define the color for the wall
+PALLET_COLOR= (60, 179, 113)
+pastel_purple = (221, 160, 221) #color borders windows
 
 fps = pygame.time.Clock()
 
@@ -22,8 +23,16 @@ velocity = [0, 0]
 recordScore = 0
 lastScore = 0
 
+rect_x = 0
+rect_y = 0
+rect_width = screen_width
+rect_height = 8
+
 #Pong walls are the window screen borders
 
+
+pygame.draw.rect(screen, (0, 0, 255),
+                 [50, 200, 500, 200])
 running = True
 while running:
     for event in pygame.event.get():
@@ -31,11 +40,15 @@ while running:
             running = False
 
 
-    screen.fill(WHITE)
-
-    pygame.display.flip()
-
+    screen.fill(BLACK)
     fps.tick(60)
+
+    pygame.draw.rect(screen, pastel_purple, [rect_x, rect_y, rect_width, rect_height]) #draw the top border
+    pygame.draw.rect(screen, pastel_purple, [0, screen_height - rect_height, screen_width, rect_height]) #draw the bottom border
+    pygame.draw.rect(screen, pastel_purple, [0, 0, rect_height, screen_height]) #draw the left border
+
+    # Update the display
+    pygame.display.flip()
 
 pygame.quit()
 sys.exit()
