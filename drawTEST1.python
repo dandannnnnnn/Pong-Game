@@ -31,8 +31,7 @@ rect_height = 8
 x = 400
 y = 400
 
-pygame.draw.rect(screen, (0, 0, 255),
-                 [50, 200, 500, 200])
+pygame.draw.rect(screen, (0, 0, 255), [50, 200, 500, 200])
 running = True
 while running:
     for event in pygame.event.get():
@@ -58,7 +57,7 @@ while running:
 
     pygame.draw.circle(screen, BALL_COLOR, (150, 150), ballRADIUS) #pong ball drawing
 
-
+    
 
     # Update the display
     pygame.display.flip()
