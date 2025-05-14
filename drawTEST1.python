@@ -108,7 +108,7 @@ while running:
     pygame.draw.rect(screen, pastel_purple, [0, 0, borderThickness, screen_height]) #left border
 
     pygame.draw.rect(screen, WHITE, [pallet_x, pallet_y, pallet_width, pallet_height]) #pong pallet drawing
-    pygame.draw.circle(screen, BALL_COLOR, (int(positionBall_x), int(positionBall_y)), ballRADIUS) #pong ball drawing
+    pygame.draw.circle(screen, BALL_COLOR, (float(positionBall_x), float(positionBall_y)), ballRADIUS) #pong ball drawing
 
 
     pygame.display.flip()

@@ -1,0 +1,58 @@
+import pygame, sys
+
+# Initialize pygame
+pygame.init()
+screen_width = 400
+screen_height = 400
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Pong Game: User Difficulty Selection")
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+color_light = (170, 170, 170)
+color_dark = (100, 100, 100)
+
+#Global variables
+fps = pygame.time.Clock()
+
+
+
+
+
+
+running = True
+while running:
+    screen.fill(WHITE)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+
+    #Text
+    font = pygame.font.SysFont('Arial',18, bold=True)
+    text = font.render('Select Difficulty', True, BLACK)
+    textRectangle = text.get_rect()
+    textRectangle.center = (screen_width // 2, 50)
+    screen.blit(text, textRectangle)
+
+    #buttons (Easy - Medium - Hard)
+    fontButton = pygame.font.SysFont('Arial', 20, bold=True)
+    buttonEasy = fontButton.render('Easy', True, (143, 227, 149))
+    buttonEasyRect = buttonEasy.get_rect()
+    buttonEasyRect.center = (screen_width // 2, 150)
+    screen.blit(buttonEasy, buttonEasyRect)
+
+    buttonMedium = fontButton.render('Medium', True, (227, 172, 143))
+    buttonMediumRect = buttonMedium.get_rect()
+    buttonMediumRect.center = (screen_width // 2, 250)
+    screen.blit(buttonMedium, buttonMediumRect)
+
+    buttonHard = fontButton.render('Hard', True, (227, 143, 143))
+    buttonHardRect = buttonHard.get_rect()
+    buttonHardRect.center = (screen_width // 2, 350)
+    screen.blit(buttonHard, buttonHardRect)
+
+    pygame.display.flip()
+    fps.tick(60)
+pygame.quit()
+sys.exit()
