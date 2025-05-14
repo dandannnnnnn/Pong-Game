@@ -1,58 +1,91 @@
-import pygame, sys
 
-# Initialize pygame
+
+import pygame
+import sys
+
+
 pygame.init()
 screen_width = 400
 screen_height = 400
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pong Game: User Difficulty Selection")
 
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-color_light = (170, 170, 170)
-color_dark = (100, 100, 100)
+GREEN_LIGHT = (118, 227, 120)
+ORANGE_LIGHT = (227, 151, 118)
+RED_LIGHT = (227, 129, 118)
 
-#Global variables
+#Button colors
+BUTTON_COLOR_NORMAL = (BLACK)
+BUTTON_COLOR_HOVER = (170, 170, 170)  
+BUTTON_TEXT_COLOR = WHITE  
+
+title_font = pygame.font.SysFont('Arial', 28, bold=True) 
+button_font = pygame.font.SysFont('Arial', 20, bold=True)
+
+# Global variables
 fps = pygame.time.Clock()
 
+button_width = 150
+button_height = 50
+padding = 20
+
+buttons = []
+easy = {"text": "Easy", "rect": pygame.Rect(0, 0, button_width, button_height), "base_text_color": GREEN_LIGHT, "action": "easy_selected"}
+medium = {"text": "Medium", "rect": pygame.Rect(0, 0, button_width, button_height), "base_text_color": ORANGE_LIGHT, "action": "medium_selected"}
+hard = {"text": "Hard", "rect": pygame.Rect(0, 0, button_width, button_height), "base_text_color": RED_LIGHT, "action": "hard_selected"}
+buttons.append(easy)
+buttons.append(medium)
+buttons.append(hard)
 
 
-
+start_y = 130
+for i, button_info in enumerate(buttons):
+    button_info["rect"].centerx = screen_width // 2
+    button_info["rect"].top = start_y + i * (button_height + padding)
 
 
 running = True
 while running:
-    screen.fill(WHITE)
+    mouse_pos = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Left mouse click
+                for button_info in buttons:
+                    if button_info["rect"].collidepoint(mouse_pos):
+                        print(f"Difficulty: {button_info['text']} chosen!")
 
 
-    #Text
-    font = pygame.font.SysFont('Arial',18, bold=True)
-    text = font.render('Select Difficulty', True, BLACK)
-    textRectangle = text.get_rect()
-    textRectangle.center = (screen_width // 2, 50)
-    screen.blit(text, textRectangle)
+   
+    screen.fill(WHITE)
 
-    #buttons (Easy - Medium - Hard)
-    fontButton = pygame.font.SysFont('Arial', 20, bold=True)
-    buttonEasy = fontButton.render('Easy', True, (143, 227, 149))
-    buttonEasyRect = buttonEasy.get_rect()
-    buttonEasyRect.center = (screen_width // 2, 150)
-    screen.blit(buttonEasy, buttonEasyRect)
+    title_text_surface = title_font.render('Select Difficulty', True, BLACK)
+    title_text_rect = title_text_surface.get_rect(center=(screen_width // 2, 70))
+    screen.blit(title_text_surface, title_text_rect)
 
-    buttonMedium = fontButton.render('Medium', True, (227, 172, 143))
-    buttonMediumRect = buttonMedium.get_rect()
-    buttonMediumRect.center = (screen_width // 2, 250)
-    screen.blit(buttonMedium, buttonMediumRect)
+    for button_info in buttons:
+        button_rect = button_info["rect"]
+        button_text_content = button_info["text"]
+        button_base_text_color = button_info["base_text_color"]
 
-    buttonHard = fontButton.render('Hard', True, (227, 143, 143))
-    buttonHardRect = buttonHard.get_rect()
-    buttonHardRect.center = (screen_width // 2, 350)
-    screen.blit(buttonHard, buttonHardRect)
+        current_button_bg_color = BUTTON_COLOR_NORMAL
+        if button_rect.collidepoint(mouse_pos):
+            current_button_bg_color = BUTTON_COLOR_HOVER
+
+       
+        pygame.draw.rect(screen, current_button_bg_color, button_rect, border_radius=5) # border_radius voor afgeronde hoeken
+
+       
+        text_surface = button_font.render(button_text_content, True, button_base_text_color) # Gebruik de specifieke tekstkleur
+        text_rect = text_surface.get_rect(center=button_rect.center)
+        screen.blit(text_surface, text_rect)
 
     pygame.display.flip()
     fps.tick(60)
+
 pygame.quit()
 sys.exit()
