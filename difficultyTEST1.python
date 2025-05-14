@@ -77,10 +77,10 @@ while running:
             current_button_bg_color = BUTTON_COLOR_HOVER
 
        
-        pygame.draw.rect(screen, current_button_bg_color, button_rect, border_radius=5) # border_radius voor afgeronde hoeken
+        pygame.draw.rect(screen, current_button_bg_color, button_rect, border_radius = 4)
 
        
-        text_surface = button_font.render(button_text_content, True, button_base_text_color) # Gebruik de specifieke tekstkleur
+        text_surface = button_font.render(button_text_content, True, button_base_text_color)
         text_rect = text_surface.get_rect(center=button_rect.center)
         screen.blit(text_surface, text_rect)
 
