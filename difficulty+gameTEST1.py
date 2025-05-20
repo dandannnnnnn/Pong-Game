@@ -1,11 +1,13 @@
 import pygame, sys
-import random
+import random, time
 
 pygame.init()
 screen_width = 400
 screen_height = 400
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pong Game")
+
+#Global variables
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -35,6 +37,20 @@ buttons.append(easy)
 buttons.append(medium)
 buttons.append(hard)
 
+#Game over + lives + score
+lives = 3
+score_start_time = None
+score = 0.0
+game_over = False
+
+# Game Over buttons
+restart_button = {"text": "Restart", "rect": pygame.Rect(0, 0, button_width, button_height), "base_text_color": GREEN_LIGHT, "action": "restart"}
+menu_button = {"text": "Menu", "rect": pygame.Rect(0, 0, button_width, button_height), "base_text_color": ORANGE_LIGHT, "action": "menu"}
+game_over_buttons = [restart_button, menu_button]
+for i, button_info in enumerate(game_over_buttons):
+    button_info["rect"].centerx = screen_width // 2
+    button_info["rect"].top = 220 + i * (button_height + 20)
+
 rectBorder_x = 0
 rectBorder_y_top = 0
 rect_width = screen_width
@@ -50,6 +66,7 @@ ballRADIUS = 8
 speedBall = 2.0
 speedBall_x = 0
 speedBall_y = 0
+
 
 def spawnRESET_Ball():
     global positionBall_x, positionBall_y, speedBall_x, speedBall_y
@@ -74,6 +91,8 @@ running = True
 while running:
     if in_difficulty_menu:
         screen.fill(WHITE)
+    elif game_over:
+        screen.fill(WHITE)
     else:
         screen.fill(BLACK)
 
@@ -94,9 +113,29 @@ while running:
                         elif button_info["action"] == "hard_selected":
                             speedBall = 4.0
                         spawnRESET_Ball()
+
+                        lives = 3
+                        score_start_time = time.time()
+                        score = 0.0
+                        game_over = False
+                        pallet_y = (screen_height / 2) - (pallet_height / 2)
                         in_difficulty_menu = False
+        elif game_over:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                for button_info in game_over_buttons:
+                    if button_info["rect"].collidepoint(mouse_pos):
+                        if button_info["action"] == "restart":
+                            # Restart game
+                            lives = 3
+                            score_start_time = time.time()
+                            score = 0.0
+                            game_over = False
+                            spawnRESET_Ball()
+                            pallet_y = (screen_height / 2) - (pallet_height / 2)
+                        elif button_info["action"] == "menu":
+                            in_difficulty_menu = True
+                            game_over = False
         else:
-            # Game events (e.g., key presses) handled here if needed
             pass
 
     if in_difficulty_menu:
@@ -105,6 +144,29 @@ while running:
         screen.blit(title_text_surface, title_text_rect)
 
         for button_info in buttons:
+            button_rect = button_info["rect"]
+            button_text_content = button_info["text"]
+            button_base_text_color = button_info["base_text_color"]
+
+            current_button_bg_color = BUTTON_COLOR_NORMAL
+            if button_rect.collidepoint(mouse_pos):
+                current_button_bg_color = BUTTON_COLOR_HOVER
+
+            pygame.draw.rect(screen, current_button_bg_color, button_rect, border_radius=4)
+            text_surface = button_font.render(button_text_content, True, button_base_text_color)
+            text_rect = text_surface.get_rect(center=button_rect.center)
+            screen.blit(text_surface, text_rect)
+    elif game_over:
+        #Game over screen
+        game_over_text = title_font.render('Game Over', True, RED_LIGHT)
+        game_over_rect = game_over_text.get_rect(center=(screen_width // 2, 100))
+        screen.blit(game_over_text, game_over_rect)
+
+        score_text = button_font.render(f"Score: {score:.2f} s", True, BLACK)
+        score_rect = score_text.get_rect(center=(screen_width // 2, 160))
+        screen.blit(score_text, score_rect)
+
+        for button_info in game_over_buttons:
             button_rect = button_info["rect"]
             button_text_content = button_info["text"]
             button_base_text_color = button_info["base_text_color"]
@@ -152,8 +214,16 @@ while running:
                 speedBall_x *= -1
                 positionBall_x = pallet_x - ballRADIUS
 
+       
         if positionBall_x - ballRADIUS > screen_width:
-            spawnRESET_Ball()
+            lives -= 1
+            if lives > 0:
+                spawnRESET_Ball()
+                pallet_y = (screen_height / 2) - (pallet_height / 2)
+            else:
+                # Game over, calculate score
+                score = time.time() - score_start_time
+                game_over = True
 
         # Draw game border, paddle, and ball only in game mode
         pygame.draw.rect(screen, pastel_purple, [rectBorder_x, rectBorder_y_top, rect_width, borderThickness])
@@ -162,6 +232,9 @@ while running:
 
         pygame.draw.rect(screen, WHITE, [pallet_x, pallet_y, pallet_width, pallet_height])
         pygame.draw.circle(screen, BALL_COLOR, (int(positionBall_x), int(positionBall_y)), ballRADIUS)
+
+        lives_text = button_font.render(f"Lives: {lives}", True, WHITE)
+        screen.blit(lives_text, (10, 10))
 
     pygame.display.flip()
     fps.tick(60)
