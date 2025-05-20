@@ -72,7 +72,11 @@ in_difficulty_menu = True
 running = True
 
 while running:
-    screen.fill(WHITE if in_difficulty_menu else BLACK)
+    if in_difficulty_menu:
+        screen.fill(WHITE)
+    else:
+        screen.fill(BLACK)
+
     mouse_pos = pygame.mouse.get_pos()
 
     for event in pygame.event.get():
@@ -151,6 +155,7 @@ while running:
         if positionBall_x - ballRADIUS > screen_width:
             spawnRESET_Ball()
 
+        # Draw game border, paddle, and ball only in game mode
         pygame.draw.rect(screen, pastel_purple, [rectBorder_x, rectBorder_y_top, rect_width, borderThickness])
         pygame.draw.rect(screen, pastel_purple, [0, screen_height - borderThickness, screen_width, borderThickness])
         pygame.draw.rect(screen, pastel_purple, [0, 0, borderThickness, screen_height])
