@@ -1,6 +1,8 @@
 import pygame, sys
 import random, time
+import math
 
+#Initialize game
 pygame.init()
 screen_width = 400
 screen_height = 400
@@ -195,9 +197,11 @@ while running:
         if pallet_y + pallet_height > screen_height - borderThickness:
             pallet_y = screen_height - borderThickness - pallet_height
 
+        #Ball movement
         positionBall_x += speedBall_x
         positionBall_y += speedBall_y
 
+        #Ball + border collision
         if positionBall_x - ballRADIUS <= borderThickness:
             speedBall_x *= -1
             positionBall_x = borderThickness + ballRADIUS
@@ -209,9 +213,11 @@ while running:
             speedBall_y *= -1
             positionBall_y = screen_height - borderThickness - ballRADIUS
 
-        ball_rect = pygame.Rect(positionBall_x - ballRADIUS, positionBall_y - ballRADIUS, ballRADIUS * 2, ballRADIUS * 2)
-        pallet_rect = pygame.Rect(pallet_x, pallet_y, pallet_width, pallet_height)
-
+        #Ball + pallet collision
+        if positionBall_y + ballRADIUS > pallet_y and positionBall_y - ballRADIUS < pallet_y + pallet_height:
+            if positionBall_x > pallet_height / 2:
+                angle = calc_angle(positionBall_x)
+                speedBall_x = abs()
         if ball_rect.colliderect(pallet_rect):
             if speedBall_x > 0:
                 speedBall_x *= -1

@@ -1,0 +1,10 @@
+  if positionBall_x - ballRADIUS <= borderThickness:
+        speedBall_x *= -1
+        positionBall_x = borderThickness + ballRADIUS
+
+    if positionBall_y - ballRADIUS <= borderThickness:
+        speedBall_y *= -1
+        positionBall_y = borderThickness + ballRADIUS
+    if positionBall_y + ballRADIUS >= screen_height - borderThickness:
+        speedBall_y *= -1
+        positionBall_y = screen_height - borderThickness - ballRADIUS
