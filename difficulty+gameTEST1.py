@@ -108,10 +108,13 @@ while running:
                     if button_info["rect"].collidepoint(mouse_pos):
                         if button_info["action"] == "easy_selected":
                             speedBall = 2.0
+                            pallet_height = 40
                         elif button_info["action"] == "medium_selected":
                             speedBall = 3.0
+                            pallet_height = 30
                         elif button_info["action"] == "hard_selected":
                             speedBall = 4.0
+                            pallet_height = 20
                         spawnRESET_Ball()
 
                         lives = 3
