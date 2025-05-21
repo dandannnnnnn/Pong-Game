@@ -57,6 +57,7 @@ rectBorder_x = 0
 rectBorder_y_top = 0
 rect_width = screen_width
 borderThickness = 8
+right_border_x = screen_width - borderThickness
 
 pallet_width = 4
 pallet_height = 40
@@ -68,6 +69,8 @@ ballRADIUS = 8
 speedBall = 2.0
 speedBall_x = 0
 speedBall_y = 0
+positionBall_x = 0
+positionBall_y = 0
 
 
 def spawnRESET_Ball():
@@ -80,6 +83,17 @@ def spawnRESET_Ball():
     speedBall_x = direction_x * speedBall
     speedBall_y = direction_y * speedBall
 
+def calc_angle(positionAngle):
+    # Example: calculate angle based on position along the paddle
+    # Clamp positionAngle between 0 and pallet_height
+    positionAngle = max(0, min(positionAngle, pallet_height))
+    # Map positionAngle to an angle between -45 and 45 degrees
+    angle_range = 90  # total angle range
+    angle = (positionAngle / pallet_height) * angle_range - (angle_range / 2)
+    return angle
+
+startPosition = random.randint(0, pallet_height)
+startAngle = math.radians(calc_angle(startPosition))
 spawnRESET_Ball()
 
 start_y = 130
@@ -206,25 +220,37 @@ while running:
             speedBall_x *= -1
             positionBall_x = borderThickness + ballRADIUS
 
+        # Create rects for collision detection (always define before use)
+        ball_rect = pygame.Rect(int(positionBall_x - ballRADIUS), int(positionBall_y - ballRADIUS), ballRADIUS * 2, ballRADIUS * 2)
+        pallet_rect = pygame.Rect(int(pallet_x), int(pallet_y), int(pallet_width), int(pallet_height))
+
         if positionBall_y - ballRADIUS <= borderThickness:
             speedBall_y *= -1
             positionBall_y = borderThickness + ballRADIUS
+
+        # Ball + bottom border collision
         if positionBall_y + ballRADIUS >= screen_height - borderThickness:
             speedBall_y *= -1
             positionBall_y = screen_height - borderThickness - ballRADIUS
 
+        #Ball angles
+        if ball_rect.colliderect(pallet_rect):
+            # Calculate where the ball hit the paddle
+            hit_pos = (positionBall_y - pallet_y) / pallet_height
+            angle = calc_angle(hit_pos * pallet_height)
+            speed = math.hypot(speedBall_x, speedBall_y)
+            speedBall_x = -abs(speedBall) * math.cos(math.radians(angle))
+            speedBall_y = speedBall * math.sin(math.radians(angle))
+            positionBall_x = pallet_x - ballRADIUS
+
         #Ball + pallet collision
-        if positionBall_y + ballRADIUS > pallet_y and positionBall_y - ballRADIUS < pallet_y + pallet_height:
-            if positionBall_x > pallet_height / 2:
-                angle = calc_angle(positionBall_x)
-                speedBall_x = abs()
         if ball_rect.colliderect(pallet_rect):
             if speedBall_x > 0:
                 speedBall_x *= -1
                 positionBall_x = pallet_x - ballRADIUS
 
-       
-        if positionBall_x - ballRADIUS > screen_width:
+        
+        if positionBall_x + ballRADIUS >= right_border_x:
             lives -= 1
             if lives > 0:
                 spawnRESET_Ball()
@@ -233,12 +259,14 @@ while running:
                 # Game over, calculate score
                 score = time.time() - score_start_time
                 game_over = True
-
         # Draw game border, paddle, and ball only in game mode
-        pygame.draw.rect(screen, pastel_purple, [rectBorder_x, rectBorder_y_top, rect_width, borderThickness])
-        pygame.draw.rect(screen, pastel_purple, [0, screen_height - borderThickness, screen_width, borderThickness])
-        pygame.draw.rect(screen, pastel_purple, [0, 0, borderThickness, screen_height])
+        pygame.draw.rect(screen, pastel_purple, [rectBorder_x, rectBorder_y_top, rect_width, borderThickness])  # Top border
+        pygame.draw.rect(screen, pastel_purple, [0, screen_height - borderThickness, screen_width, borderThickness])  # Bottom border
+        pygame.draw.rect(screen, pastel_purple, [0, 0, borderThickness, screen_height])  # Left border
+        pygame.draw.rect(screen, pastel_purple, [right_border_x, 0, borderThickness, screen_height])  # Right border (behind paddle)
 
+        pygame.draw.rect(screen, WHITE, [pallet_x, pallet_y, pallet_width, pallet_height])
+        pygame.draw.circle(screen, BALL_COLOR, (int(positionBall_x), int(positionBall_y)), ballRADIUS)
         pygame.draw.rect(screen, WHITE, [pallet_x, pallet_y, pallet_width, pallet_height])
         pygame.draw.circle(screen, BALL_COLOR, (int(positionBall_x), int(positionBall_y)), ballRADIUS)
 
