@@ -1,0 +1,3 @@
+danndan,Easy,18.25434160232544
+dannndannw,Medium,14.15821385383606
+lakdladw,Hard,12.32187271118164

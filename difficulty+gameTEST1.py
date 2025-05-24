@@ -44,6 +44,79 @@ pallet_x = 380 # pallet x-position
 pallet_y = (screen_height / 2) - (pallet_height / 2)
 pallet_speed = 5 # Pallet speed
 
+# Highscore variables
+player_name = ""
+highscores = []
+current_level = ""
+
+def load_highscores():
+    try:
+        with open("highscores.txt", "r") as file:
+            for line in file:
+                name, level, score = line.strip().split(",")
+                highscores.append({"name": name, "level": level, "score": float(score)})
+    except FileNotFoundError:
+        pass
+
+def save_highscores():
+    with open("highscores.txt", "w") as file:
+        for score in highscores:
+            file.write(f"{score['name']},{score['level']},{score['score']}\n")
+
+def get_player_name():
+    global player_name
+    player_name = ""
+    input_active = True
+    while input_active:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    input_active = False
+                elif event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]
+                else:
+                    player_name += event.unicode
+
+        screen.fill(WHITE)
+        text_surface = button_font.render("Enter your name:", True, BLACK)
+        text_rect = text_surface.get_rect(center=(screen_width // 2, 100))
+        screen.blit(text_surface, text_rect)
+
+        name_surface = button_font.render(player_name, True, BLACK)
+        name_rect = name_surface.get_rect(center=(screen_width // 2, 150))
+        screen.blit(name_surface, name_rect)
+
+        pygame.display.flip()
+        fps.tick(60)
+
+def update_highscores(name, level, score):
+    highscores.append({"name": name, "level": level, "score": score})
+    highscores.sort(key=lambda x: x["score"], reverse=True)
+    save_highscores()
+
+def display_highscores():
+    screen.fill(WHITE)
+    title_text = title_font.render("Highscores", True, BLACK)
+    title_rect = title_text.get_rect(center=(screen_width // 2, 30))
+    screen.blit(title_text, title_rect)
+
+    y_offset = 80
+    for i, score_data in enumerate(highscores[:5]):  # Top 5
+        score_text = button_font.render(
+            f"{i+1}. {score_data['name']} - {score_data['level']} - {score_data['score']:.2f} s",
+            True, BLACK)
+        score_rect = score_text.get_rect(center=(screen_width // 2, y_offset))
+        screen.blit(score_text, score_rect)
+        y_offset += 30
+
+    pygame.display.flip()
+    time.sleep(3) #leaderboard display 3sec
+
+load_highscores()
+
 # Ball
 ballRADIUS = 8
 speedBall = 2.0 
@@ -134,12 +207,16 @@ while running:
                         if button_info["action"] == "easy_selected":
                             speedBall = 2.0
                             pallet_height = 40
+                            current_level = "Easy"
                         elif button_info["action"] == "medium_selected":
                             speedBall = 3.0
                             pallet_height = 30
+                            current_level = "Medium"
                         elif button_info["action"] == "hard_selected":
                             speedBall = 4.0
                             pallet_height = 20
+                            current_level = "Hard"
+                        get_player_name()
                         spawnRESET_Ball()
                         # Reset game
                         lives = 3
@@ -209,6 +286,10 @@ while running:
             text_surface = button_font.render(button_text_content, True, button_base_text_color)
             text_rect = text_surface.get_rect(center=button_rect.center)
             screen.blit(text_surface, text_rect)
+        
+        update_highscores(player_name, current_level, score)
+        display_highscores()
+        in_difficulty_menu = True
     else:
 
         # Pallet movement
@@ -224,7 +305,7 @@ while running:
         if pallet_y + pallet_height > screen_height - borderThickness:
             pallet_y = screen_height - borderThickness - pallet_height
 
-        # Balle movement
+        # Ball movement
         positionBall_x += speedBall_x
         positionBall_y += speedBall_y
 
