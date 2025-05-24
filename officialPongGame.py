@@ -205,15 +205,15 @@ while running:
                 for button_info in buttons:
                     if button_info["rect"].collidepoint(mouse_pos):
                         if button_info["action"] == "easy_selected":
-                            speedBall = 2.0
+                            speedBall = 3.0
                             pallet_height = 40
                             current_level = "Easy"
                         elif button_info["action"] == "medium_selected":
-                            speedBall = 3.0
+                            speedBall = 4.0
                             pallet_height = 30
                             current_level = "Medium"
                         elif button_info["action"] == "hard_selected":
-                            speedBall = 4.0
+                            speedBall = 5.0
                             pallet_height = 20
                             current_level = "Hard"
                         get_player_name()
