@@ -31,7 +31,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global mqtt_paddle_command
     payload = msg.payload.decode()
-    # CORRECTED: Now accepts "0", "1", or "hold"
     if payload in ["0", "1", "hold"]:
         mqtt_paddle_command = payload
     else:
@@ -78,7 +77,7 @@ right_border_x = screen_width - borderThickness
 
 # Pallet
 pallet_width = 4
-pallet_height = 40 # Default, will be changed by difficulty
+pallet_height = 40
 pallet_x = 380
 pallet_y = (screen_height / 2) - (pallet_height / 2)
 pallet_speed = 5
@@ -149,7 +148,7 @@ def update_highscores(name, level, score_val):
     global highscores
     highscores.append({"name": name, "level": level, "score": score_val})
     highscores.sort(key=lambda x: x["score"], reverse=True)
-    highscores = highscores[:10] # Keep top 10 scores
+    highscores = highscores[:10] #top 10 score
     save_highscores()
 
 
@@ -292,11 +291,11 @@ while running:
                             pallet_height = 50
                             current_level = "Easy"
                         elif button_info["action"] == "medium_selected":
-                            speedBall = 4.0 # Adjusted
+                            speedBall = 4.0
                             pallet_height = 40
                             current_level = "Medium"
                         elif button_info["action"] == "hard_selected":
-                            speedBall = 6.0 # Adjusted
+                            speedBall = 6.0
                             pallet_height = 30
                             current_level = "Hard"
 
